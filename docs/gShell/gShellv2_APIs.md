@@ -1,39 +1,33 @@
 ### Instructions on using Native Graph Store
 
-gShell is a shell-like environment implemented using IBMPPL for demonstrating how the System G native graph store works. gShell allows users to operate multiple graph stores and it supports graphs of different edge types (directed, undirected, pred_directed). Each command in gShell is implemented by a function that can be easily plugged in to the system, so users can implement additional data store operations or analytic tools in the shell. The shell can work in interactive mode (similar to Linux terminal), server/client mode, or batch mode.
+gShell is a shell-like environment implemented using IBMPPL for demonstrating how the System G native graph store works. gShell allows users to operate multiple graph stores and it supports graphs of different edge types (directed, undirected, pred_directed). Each command in gShell is implemented by a function that can be easily plugged in to the system, so users can implement additional data store operations or analytic tools in the shell. gShell can work in a number of modes (described in detail in Section 2 Usage) such as interactive mode (similar to Linux terminal), server/client mode, and batch mode.
 
 <b> 1. Compile </b>
 
-The compilation of gShell requires the compilation of IBMPPL runtime and System G kvstore. The compile can be done using make all in the respective directories. Here is the example.
+The compilation of gShell requires the compilation of IBMPPL runtime and System G kvstore, which can be done using make all in the respective directories, as shown below.
 
 ```bash
       cd ibmppl/runtime
-	  make clean all
+      make clean all
       cd ibmppl/kvstore
-	  make clean all
+      make clean all
       cd ibmppl/apps/gShell_v2
       make clean all
 ```
 
 <b> 2. Usage </b>
 
-There are 5 modes for using gShell: interactive mode, server/client mode,
-argument mode, batch mode, and multiuser mode. The following discussion
-assumes the use of interactive mode, although it applies to other modes as
-well. gShell can be invoked as follows:
+There are 5 modes for using gShell: interactive mode, server/client mode, argument mode, batch mode, and multiuser mode. The rest of this tutorial shows command usage in the interactive mode, but the same commands apply to other modes as well. gShell can be invoked as follows:
 
 ```bash
     ./nvStore <interactive [< batch_file] |server [socket_port]|execute [arguments] | multiuser> 
 	./nvStoreClient <server_ip> <command+arguments> [socket_port]
 ```
-<interactive>: start gShell in interactive mode, where a prompt will appear to ask for input commands
-Batch mode is a variant of the interactive mode, where the commands stored in a text file is redirected to the interactive mode.
-<execute>: start gShell in argument mode, where the command and parameters in [arguments] will be performed 
-<server>: start gShell in server/client mode, communicated by IPC socket. When
-    batch mode is invoked, user must run nvStoreClient.
-<multiuser>: start gShell by gShellSuperMgr, another code in the folder, so that multiple gShell instances
-    can work concurrently, coordinated by the supermanager. This is for
-    providing gShell as service on Cloud.
+<interactive>: start gShell in the interactive mode, where a prompt will appear to ask for input commands. 
+The batch mode is a variant of the interactive mode, where the commands stored in a text file are redirected to the interactive mode and executed sequentially.
+<execute>: start gShell in the argument mode, where the command and parameters specified in [arguments] will be performed 
+<server>: start gShell in the server/client mode, communicated by IPC socket. When batch mode is invoked, nvStoreClient must be run to communicate with nvStore for issuing commands.
+<multiuser>: start gShell in the multiuser mode by using gShellSuperMgr (in gShell_v2.1), so that multiple gShell instances can work concurrently, coordinated by the supermanager. This is for providing gShell as a cloud-based service.
 
 Example: 
 
@@ -47,16 +41,16 @@ Example:
           ./nvStore execute "<command>"
 ```
 
-For personal use, the interactive mode is recommand, as it comes with a simple
-shell environment along with help info (by clicking the tab key). 
+For personal use, the interactive mode is recommended, as it comes with a simple
+shell environment along with help info (by pressing the tab key). 
 
-The above command starts the gShell. In the shell, it asks user to input
-instructions to create/access any store, after the prompt sign ">>". User can
-create a store to for saving a particular graph type; add a vertex or an edge
+The above command starts the gShell. In the shell, it asks the user to input
+instructions to create/access any store, after the prompt sign ">>". The user can
+create a store to save a graph of a particular type (undirected or directed); add a vertex or an edge
 with properties; update the property of existing vertices/edges; perform some
 queries, etc.
 
-In the interactive mode, the help info can be obtained by click the tab key:
+In the interactive mode, the help info can be obtained by pressing the tab key:
 ```bash
 bash-4.1$ ./nvStore interactive
 directory is created: database/
@@ -66,25 +60,26 @@ analytic_betweenness_centrality    analytic_bfs
 analytic_closeness_centrality      analytic_clustering_coefficient
 analytic_colfilter                 analytic_connected_component
 analytic_degree_centrality         analytic_egonet
-analytic_k_core                    analytic_k_shortest_paths
-analytic_reset_engine              analytic_shortest_paths
-analytic_start_engine              analytic_stop_engine
-analytic_triangle_count            delete_eprop
-delete_vprop                       export_csv
-filter_edges                       filter_vertices
-find_edge                          find_multiple_vertex
-find_neighbors                     find_random_edges
-find_random_vertices               find_vertex
-find_vertex_max_degree             get_num_edges
-get_num_vertices                   get_vertex_degree
-load_csv_edges                     load_csv_vertices
-print_all                          set_max_mem
-span_graph                         update_edge
-update_vertex                      visual_loading
-close                              close_all                          
-open                               delete
-create                             list_all
-help                               version
+analytic_find_path                 analytic_k_core                    
+analytic_k_shortest_paths          analytic_reset_engine              
+analytic_shortest_paths            analytic_start_engine              
+analytic_stop_engine               analytic_triangle_count            
+delete_eprop                       delete_vprop                       
+export_csv                         filter_edges                       
+filter_vertices                    find_edge                          
+find_multiple_vertex               find_neighbors                     
+find_random_edges                  find_random_vertices               
+find_vertex                        find_vertex_max_degree             
+get_num_edges                      get_num_vertices                   
+get_vertex_degree                  load_csv_edges                     
+load_csv_vertices                  print_all                          
+set_max_mem                        span_graph                         
+update_edge                        update_vertex                      
+visual_loading                     close                              
+close_all                          open                               
+delete                             create                             
+list_all                           help                               
+version 
 ```
 where all the available commands are listed on the screen. When you are in the
 middle of inputing a command, you can press `tab` once for auto-completing the
@@ -99,7 +94,7 @@ gShell>> help
 {
 "info":[
 {"MESSAGE":"<tab>:      list all available commands"},
-{"MESSAGE":"ab<tab>:    auto complete the command all list all commands starting with ab"},
+{"MESSAGE":"ab<tab>:    auto complete the command or list all commands starting with ab"},
 {"MESSAGE":"Ctrl+C:     quick exit"},
 {"MESSAGE":"up/down:    find the previous/nest command"},
 {"MESSAGE":"left/right: move cursor for editing a command"},
@@ -109,10 +104,10 @@ gShell>> help
 ```
 
 Each command in gShell comes with an argument `--help` for displaying the
-argument info. This is helpful if we do not want to memorize all argument
-information. Argument without mark `[optional]` is a must.
+argument information. This is helpful if we do not want to memorize all argument
+information. Arguments not marked as `[optional]` are mandatory.
 
-By default, the output information is always organized as in JSON format, although
+By default, the output information is always organized in JSON format, although
 you can convert it into a more human readable format by specifying `--format
 plain` in each command. 
 
@@ -139,29 +134,26 @@ STORE NAME      COMMAND
 ---------------------------------------
 <info>
         MESSAGE
-		list_all - list all graphs
+	list_all - list all graphs
 <info>
-	    MESSAGE
-		--format:  [optional] output format
+	MESSAGE
+	--format:  [optional] output format
 <info>
-		MESSAGE
-		--help:  [optional] help infomation
+	MESSAGE
+	--help:  [optional] help infomation
 ---------------------------------------
 ```
 	
 <b> 3. Commands </b>	
-The commonly used commands in gShell include the follows. Please use `tab tab`
-to see the complete command lists. Besides, this tutorial discusses ususally
-used parameters for each command, not the complete parameter lists. For the
-full list, again please use `<command> --help` for details. All the commands
+The commonly used commands in gShell include the following. Please use `tab tab`
+to see the complete command list. Note that this tutorial discusses commonly
+used arguments for each command, not necessarily the complete argument list. For the
+full list, again please use `<command> --help`. All the commands
 are built on `ibm_generic_graph.hpp` class, so you can also view this gShell
 as an advanced example for using the System G Native Store programming APIs.  
 
-- Create a store. Assuming we want to create a graph store called
-  "<graph_name>", and we want use it to store an undirected graph. Note that a
-  graph is not necessarily to be connected in gShell; that is, a graph store
-  can maintain a set of small graphs, but all of them must be of the same type
-  (directed, or undirected). The command for creating such a graph store is:
+- Create a store. Note that the graph in a graph store is not necessarily connected; that is, a graph store
+  can maintain a set of small graphs, but all of them must be of the same type (directed, or undirected). Assuming we want to create a graph store called "<graph_name>" and use it to store an undirected graph, the command for creating such a graph store is:
 
 ```bash
          create --graph <graph_name> --type <undirected|directed>
@@ -169,7 +161,7 @@ as an advanced example for using the System G Native Store programming APIs.
 
 - To close a store, we use "close". It removes the store from memory, so that
   we have more memory to process other graphs. Or, we can issue "close_all" to
-  close all opened graphs. So, the memory is released. It is suggested to
+  close all opened graphs in order to release memory. It is suggested to
   issue such commands time by time to make the memory free. Note that gShell
   can capture `Ctrl+c` and interpret it as a `close_all` command. 
 
@@ -178,38 +170,29 @@ as an advanced example for using the System G Native Store programming APIs.
          close_all
 ```
  
-- List all stores and their types. This command will list all existing stores (opened or not opened) and their respective graph type (directed, undirected, pred_directed). Note that this command will not load any store if they are not opened already. 
+- List all stores and their types. This command will list all existing stores (opened or not opened) and their respective graph types (directed, undirected, pred_directed). Note that this command will not load any store if they are not opened already. 
 
 ```bash
          list_all 
 ```
 
-- Erase a store from the disk. This is a permanent deletion and can not be recovered. So, this command should be used in cautious. 
+- Erase a store from the disk. This is a permanent deletion and can not be recovered. So, this command should be used with caution. 
 
 ```bash
         delete --graph <graph_name>
 ```
 
-- Now, we have <graph_name> as an empty graph. A easy way to populate the
-  store is to convert a file, say .csv files or edge list, to the edge
-  store. In the following example, we assume that we have a edge list in csv
-  format called <csv_file>, where each line in the fileconsists of <source
-  node> <target node> <edge weight>. User must indicate that the source and
-  target nodes are given by the <colID_src> and <colID_targ> columns,
-  respectively. The data in the rest columns are treated as the properties on
-  this edge. Note that this command must follow a store name, since gShell can
-  concurrently operate multiple graph stores. If the first row of the .csv
-  file is the header, then users must specify "has_header". We can use comma,
-  tab or blank space to separate columns in the .csv file. The separator is
-  specified by [separator], such as "," or ":". If a string contains these
-  separator characters, each char should work. 
+- After the create graph command is executed, we have <graph_name> as an empty graph. An easy way to populate the
+  store is to import vertex and edge information from files. In the following example, we assume that we have an edge list in csv format called <csv_file>, where each line in the file consists of <source
+  node> <target node> <edge weight> to indicate an edge and its weight. The user must indicate the respective positions of the columns in the csv file that correspond to the source and target of each edge. The data in the rest of the columns are treated as the properties on each edge. Note that this command must have store name as an argument (--graph), since gShell can concurrently operate multiple graph stores. If the .csv file has no header, then the user must specify "no_header". gShell automatically recognizes the use of comma, tab or space to separate columns in the .csv file. The separator is specified with the --separator argument, such as "," or ":". If a string contains these
+  separator characters, each char should work. <-- jl: not sure what this means
 
 ```bash
          load_csv_edges --graph <graph_name> --csvfile <csv_file> --srcpos
          <colID_src> --targpos <colID_targ> [--no_header] --separator <,>
 ```         
 
-- Note that in the above edge list file (or .csv file)  we can only have edge properties. In order to create a graph with both edge and vertex properties, we need and additional .csv file. We can run the above operation first to build the graph with edge properties. Then we can read a vertex file to load vertex properties. In the following example, the <colID_vtx>-th column in the vertex file gives the ID of a vertex and the rest columns give the properties of the vertex as a vector of strings. 
+- Note that in the above edge csv file we can only have edge properties. In order to create a graph with both edge and vertex properties, we need and additional vertex csv file. We can run the above command first to build the graph with edge properties. Then we can import a vertex csv file to load vertex properties. Alternatively we can import the vertex list first and then import the edge list. In the following example, the <colID_vtx>-th column in the vertex file gives the ID of a vertex and the rest columns give the properties of the vertex as a vector of strings. 
 
 ```bash
          load_csv_vertices --graph <graph_name> --csvfile <csv_file> --keypos
